@@ -1,0 +1,64 @@
+<html>
+  <head>
+    <script src="interfaz.js" type="text/javascript"></script>
+    <script src="canvas.js" type="text/javascript"></script>
+    <script src="victor.min.js" type="text/javascript"></script>
+    <script src="fisica.js" type="text/javascript"></script>
+  </head>
+  <body>
+
+    <!--MENU-->
+    <div>
+      <button id="botonEjecutar" onclick="ejecutar();">Ejecutar</button>
+      <button id="botonDetener" onclick="detener();" disabled>Detener</button>
+      <button id="botonReiniciar" onclick="reiniciar();">Reiniciar</button>
+    </div>
+
+    <!--Main-->
+    <table style="width:100%;height:90%;"><tr><td>
+
+      <!-- Canvas -->
+      <canvas id="canvas" style="border:solid 2px"></canvas>
+
+      </td><td>
+
+        <!--Cuerpos-->
+        <div id="divCuerpos" style="width:100%;height:100%;">
+          <select id="selectorCuerpos" onchange="actualizarOpcionesCuerpos();"></select>
+            <button onclick="nuevoCuerpo();">+</button>
+            <button onclick="borrarCuerpo();">-</button>
+          <!--Opciones-->
+          <div>
+            <span>Posición inicial<br/>
+              X:<input id="pos_x" onchange="cambiaPosX();"><br/>
+              Y:<input id="pos_y" onchange="cambiaPosY();">
+            </span><br/>
+            <span>Velocidad inicial<br/>
+              X:<input id="vel_x" onchange="cambiaVelX();"><br/>
+              Y:<input id="vel_y" onchange="cambiaVelY();">
+            </span><br/>
+            <div hidden>
+            <span>Aceleración<br/>
+              X:<input id="acc_x" onchange="cambiaAccX();"><br/>
+              Y:<input id="acc_y" onchange="cambiaAccY();">
+            </span><br/>
+            <span>Radio:<input id="radio" onchange="cambiaRadio();"></span><br/>
+            <span>Masa:<input id="masa" onchange="cambiaMasa();"></span><br/>
+            <span>Elasticidad:<input id="elasticidad" onchange="cambiaElasticidad();"></span><br/>
+            <span>Rozamiento:<input id="rozamiento" onchange="cambiaRozamiento();"></span><br/>
+            <br/><br/>
+            <span>Rozamiento del suelo:<input id="rozamientoSuelo" onchange="cambiaRozamientoSuelo();"></span><br/>
+            <span>Paredes:<input type="checkbox" id="paredes" onchange="cambiaParedes();"></span><br/>
+            <span>Gravedad del entorno:<input id="gravedadEntorno" onchange="cambiaGravedadEntorno();"></span><br/>
+            <span>Gravedad de los cuerpos:<input type="checkbox" id="gravedadCuerpos" onchange="cambiaGravedadCuerpos();"></span><br/>
+            <span>Viento:<br/>
+              X:<input id="viento_x" onchange="cambiaVientoX();"><br/>
+              Y:<input id="viento_y" onchange="cambiaVientoY();">
+            </span>
+            </div>
+          </div>
+        </div>
+
+    </td></tr></table>
+  </body>
+</html>
