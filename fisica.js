@@ -78,12 +78,12 @@ Fisica.colisionParedPelota = function(cuerpo, linea) {
     return;
   }
   let x12 = new Victor(
-    (a+b*m - d*m + Math.sqrt(D)) / 1+Math.pow(m,2),
-    (a+b*m - d*m - Math.sqrt(D)) / 1+Math.pow(m,2)
+    (a+b*m - d*m + Math.sqrt(D)) / (1+Math.pow(m,2)),
+    (d+a*m + b*Math.pow(m,2) + m*Math.sqrt(D)) / (1+Math.pow(m,2))
   );
   let y12 = new Victor(
-    (d+a*m - b*Math.pow(m,2) + m*Math.sqrt(D)) / 1+Math.pow(m,2),
-    (d+a*m - b*Math.pow(m,2) - m*Math.sqrt(D)) / 1+Math.pow(m,2)
+    (a+b*m - d*m - Math.sqrt(D)) / (1+Math.pow(m,2)),
+    (d+a*m + b*Math.pow(m,2) - m*Math.sqrt(D)) / (1+Math.pow(m,2))
   );
   Canvas.circulo(x12.x, x12.y, 3, "#000");
   Canvas.circulo(y12.x, y12.y, 3, "#000");
