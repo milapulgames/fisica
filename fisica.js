@@ -1,4 +1,7 @@
-Fisica = {};
+Fisica = {
+  ESTATICO: "Estático",
+  DINAMICO: "Dinámico"
+};
 PAREDES = true;
 
 Fisica.actualizar = function(datos) {
@@ -66,12 +69,12 @@ Fisica.verificarPared = function(cuerpo) {
   }
 };
 
-Fisica.colisionParedPelota = function(cuerpo, linea) {
+Fisica.colisionParedPelota = function(cuerpo, recta) {
   let r = cuerpo.radio;
   let a = cuerpo.pos_x;
   let b = cuerpo.pos_y;
-  let m = linea.m;
-  let d = linea.b;
+  let m = recta.m;
+  let d = recta.b;
   //r^2(1+m^2)-(b-ma-d)^2
   let D = Math.pow(r,2)*(1+Math.pow(m,2)) - Math.pow(b-m*a-d,2);
   if (D <= 0) {

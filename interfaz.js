@@ -1,5 +1,10 @@
 let DATOS = {};
 const INFO = {};
+const COLISIONADOR = {
+  CIRCULO: "Círculo",
+  RECTA: "Recta",
+  SEGMENTO: "Segmento"
+};
 
 function inicializar() {
   if (sessionStorage.DATOS) {
@@ -7,64 +12,100 @@ function inicializar() {
   } else {
     DATOS.cuerpos = {
       rojo:{
+        clase: Fisica.DINAMICO,
         pos_x: 50,
         pos_y: 50,
         vel_x: 10,
         vel_y: 0,
         acc_x: 0,
         acc_y: 0,
-        radio: 10,
         masa: 10,
         elasticidad: 0.5,
-        rozamiento: 0.5
+        rozamiento: 0.5,
+        colisionador:{
+          tipo: COLISIONADOR.CIRCULO,
+          radio: 10
+        }
       },
       verde:{
+        clase: Fisica.DINAMICO,
         pos_x: 150,
         pos_y: 150,
         vel_x: 0,
         vel_y: -5,
         acc_x: 0,
         acc_y: 0,
-        radio: 5,
         masa: 10,
         elasticidad: 0.5,
-        rozamiento: 0.5
+        rozamiento: 0.5,
+        colisionador:{
+          tipo: COLISIONADOR.CIRCULO,
+          radio: 10
+        }
       },
       azul:{
+        clase: Fisica.DINAMICO,
         pos_x: 100,
         pos_y: 100,
         vel_x: 0,
         vel_y: 0,
         acc_x: 0,
         acc_y: 0,
-        radio: 15,
         masa: 10,
         elasticidad: 0.5,
-        rozamiento: 0.5
+        rozamiento: 0.5,
+        colisionador:{
+          tipo: COLISIONADOR.CIRCULO,
+          radio: 15
+        }
       },
       amarillo:{
+        clase: Fisica.DINAMICO,
         pos_x: 50,
         pos_y: 150,
         vel_x: 5,
         vel_y: -5,
         acc_x: 0,
         acc_y: 0,
-        radio: 10,
         masa: 10,
         elasticidad: 0.5,
-        rozamiento: 0.5
+        rozamiento: 0.5,
+        colisionador:{
+          tipo: COLISIONADOR.CIRCULO,
+          radio: 5
+        }
       },
       magenta:{
+        clase: Fisica.DINAMICO,
         pos_x: 150,
         pos_y: 50,
         vel_x: 1,
         vel_y: 1,
         acc_x: 0,
         acc_y: 0,
-        radio: 10,
         masa: 10,
         elasticidad: 0.5,
-        rozamiento: 0.5
+        rozamiento: 0.5,
+        colisionador:{
+          tipo: COLISIONADOR.CIRCULO,
+          radio: 10
+        }
+      },
+      pared:{
+        clase: Fisica.ESTATICO,
+        pos_x: 200,
+        pos_y: 10,
+        vel_x: 0,
+        vel_y: 0,
+        acc_x: 0,
+        acc_y: 0,
+        masa: 10,
+        elasticidad: 0.5,
+        rozamiento: 0.5,
+        colisionador:{
+          tipo: COLISIONADOR.RECTA,
+          pendiente: 1
+        }
       }
     };
     DATOS.otros = {
@@ -92,16 +133,45 @@ function actualizarSelectorCuerpos() {
 
 function actualizarOpcionesCuerpos() {
   datos = DATOS.cuerpos[document.getElementById('selectorCuerpos').value];
+  document.getElementById('selectorClase').value = datos.clase;
   document.getElementById('pos_x').value = datos.pos_x;
   document.getElementById('pos_y').value = datos.pos_y;
   document.getElementById('vel_x').value = datos.vel_x;
   document.getElementById('vel_y').value = datos.vel_y;
   document.getElementById('acc_x').value = datos.acc_x;
   document.getElementById('acc_y').value = datos.acc_y;
-  document.getElementById('radio').value = datos.radio;
   document.getElementById('masa').value = datos.masa;
   document.getElementById('elasticidad').value = datos.elasticidad;
   document.getElementById('rozamiento').value = datos.rozamiento;
+  let tipoColisionador = datos.colisionador.tipo;
+  document.getElementById('selectorColisionador').value = tipoColisionador;
+  switch (tipoColisionador) {
+    case COLISIONADOR.CIRCULO:
+      document.getElementById('opcionesCírculo').style.display = 'block';
+      document.getElementById('opcionesRecta').style.display = 'none';
+      document.getElementById('opcionesSegmento').style.display = 'none';
+      document.getElementById('radio').value = datos.colisionador.radio;
+      break;
+    case COLISIONADOR.RECTA:
+      document.getElementById('opcionesCírculo').style.display = 'none';
+      document.getElementById('opcionesRecta').style.display = 'block';
+      document.getElementById('opcionesSegmento').style.display = 'none';
+      let pendiente = datos.colisionador.pendiente;
+      let vertical = pendiente === undefined;
+      document.getElementById('pendienteVertical').checked = vertical;
+      document.getElementById('pendiente').style.display = (vertical ? 'none' : 'block');
+      document.getElementById('pendiente').value = (vertical ? 0 : pendiente);
+      break;
+    case COLISIONADOR.SEGMENTO:
+      document.getElementById('opcionesCírculo').style.display = 'none';
+      document.getElementById('opcionesRecta').style.display = 'none';
+      document.getElementById('opcionesSegmento').style.display = 'block';
+      document.getElementById('hasta_x').value = datos.colisionador.hasta.x;
+      document.getElementById('hasta_y').value = datos.colisionador.hasta.y;
+      break;
+    default:
+      //
+  }
 };
 
 function actualizarOtrasOpciones() {
@@ -117,16 +187,20 @@ function actualizarOtrasOpciones() {
 function nuevoCuerpo() {
   let nuevo = prompt("Nombre:");
   DATOS.cuerpos[nuevo] = {
+    clase: Fisica.DINAMICO,
     pos_x: 100,
     pos_y: 100,
     vel_x: 0,
     vel_y: 0,
     acc_x: 0,
     acc_y: 0,
-    radio: 10,
     masa: 10,
     elasticidad: 0.5,
-    rozamiento: 0.5
+    rozamiento: 0.5,
+    colisionador:{
+      tipo: COLISIONADOR.CIRCULO,
+      radio: 10
+    }
   };
   actualizarSelectorCuerpos();
   document.getElementById('selectorCuerpos').value = nuevo;
@@ -142,6 +216,11 @@ function borrarCuerpo() {
     actualizarOpcionesCuerpos();
     guardarDatos();
   }
+};
+
+function cambiaClase() {
+  DATOS.cuerpos[document.getElementById('selectorCuerpos').value].clase = document.getElementById('selectorClase').value;
+  guardarDatos();
 };
 
 function cambiaPosX() {
@@ -174,11 +253,6 @@ function cambiaAccY() {
   guardarDatos();
 };
 
-function cambiaRadio() {
-  DATOS.cuerpos[document.getElementById('selectorCuerpos').value].radio = parseInt(document.getElementById('radio').value);
-  guardarDatos();
-};
-
 function cambiaElasticidad() {
   DATOS.cuerpos[document.getElementById('selectorCuerpos').value].elasticidad = parseFloat(document.getElementById('elasticidad').value);
   guardarDatos();
@@ -191,6 +265,56 @@ function cambiaMasa() {
 
 function cambiaRozamiento() {
   DATOS.cuerpos[document.getElementById('selectorCuerpos').value].rozamiento = parseFloat(document.getElementById('rozamiento').value);
+  guardarDatos();
+};
+
+function cambiaColisionador() {
+  let nuevoColisionador = {
+    tipo: document.getElementById('selectorColisionador').value,
+  };
+  switch (nuevoColisionador.tipo) {
+    case COLISIONADOR.CIRCULO:
+      nuevoColisionador.radio = 10;
+      break;
+    case COLISIONADOR.RECTA:
+      nuevoColisionador.pendiente = 1;
+      break;
+    case COLISIONADOR.SEGMENTO:
+      nuevoColisionador.hasta = {x:50,y:50};
+      break;
+    default:
+      //
+  }
+  DATOS.cuerpos[document.getElementById('selectorCuerpos').value].colisionador = nuevoColisionador;
+  actualizarOpcionesCuerpos();
+  guardarDatos();
+};
+
+function cambiaRadio() {
+  DATOS.cuerpos[document.getElementById('selectorCuerpos').value].colisionador.radio = parseInt(document.getElementById('radio').value);
+  guardarDatos();
+};
+
+function cambiaPendiente() {
+  DATOS.cuerpos[document.getElementById('selectorCuerpos').value].colisionador.pendiente = parseInt(document.getElementById('pendiente').value);
+  guardarDatos();
+};
+
+function cambiaPendienteVertical() {
+  let vertical = document.getElementById('pendienteVertical').checked;
+  DATOS.cuerpos[document.getElementById('selectorCuerpos').value].colisionador.pendiente =
+    (vertical ? undefined : parseInt(document.getElementById('pendiente').value) || 0);
+  actualizarOpcionesCuerpos();
+  guardarDatos();
+};
+
+function cambiaHastaX() {
+  DATOS.cuerpos[document.getElementById('selectorCuerpos').value].colisionador.hasta.x = parseInt(document.getElementById('hasta_x').value);
+  guardarDatos();
+};
+
+function cambiaHastaY() {
+  DATOS.cuerpos[document.getElementById('selectorCuerpos').value].colisionador.hasta.y = parseInt(document.getElementById('hasta_y').value);
   guardarDatos();
 };
 

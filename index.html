@@ -29,31 +29,53 @@
             <button onclick="borrarCuerpo();">-</button>
           <!--Opciones-->
           <div>
+            <span hidden>Clase:<select id="selectorClase" onchange="cambiaClase();">
+              <option>Estático</option>
+              <option>Dinámico</option>
+            </select></span><br/>
             <span>Posición inicial<br/>
-              X:<input id="pos_x" onchange="cambiaPosX();"><br/>
-              Y:<input id="pos_y" onchange="cambiaPosY();">
+              __ X:<input id="pos_x" onchange="cambiaPosX();"><br/>
+              __ Y:<input id="pos_y" onchange="cambiaPosY();">
             </span><br/>
             <span>Velocidad inicial<br/>
-              X:<input id="vel_x" onchange="cambiaVelX();"><br/>
-              Y:<input id="vel_y" onchange="cambiaVelY();">
+              __ X:<input id="vel_x" onchange="cambiaVelX();"><br/>
+              __ Y:<input id="vel_y" onchange="cambiaVelY();">
             </span><br/>
             <div hidden>
             <span>Aceleración<br/>
-              X:<input id="acc_x" onchange="cambiaAccX();"><br/>
-              Y:<input id="acc_y" onchange="cambiaAccY();">
+              __ X:<input id="acc_x" onchange="cambiaAccX();"><br/>
+              __ Y:<input id="acc_y" onchange="cambiaAccY();">
             </span><br/>
-            <span>Radio:<input id="radio" onchange="cambiaRadio();"></span><br/>
             <span>Masa:<input id="masa" onchange="cambiaMasa();"></span><br/>
             <span>Elasticidad:<input id="elasticidad" onchange="cambiaElasticidad();"></span><br/>
             <span>Rozamiento:<input id="rozamiento" onchange="cambiaRozamiento();"></span><br/>
+            </div>
+            <span>Colisionador:<select id="selectorColisionador" onchange="cambiaColisionador();">
+              <option>Círculo</option>
+              <option>Recta</option>
+              <option>Segmento</option>
+            </select></span><br/>
+            <div id="opcionesCírculo" hidden>
+              <span>__ Radio:<input id="radio" onchange="cambiaRadio();"></span><br/>
+            </div>
+            <div id="opcionesRecta" hidden>
+              <span>__ Pendiente (Vertical:<input type="checkbox" id="pendienteVertical" onchange="cambiaPendienteVertical();">): <input id="pendiente" onchange="cambiaPendiente();"></span><br/>
+            </div>
+            <div id="opcionesSegmento" hidden>
+              <span>
+                __ Ancho:<input id="hasta_x" onchange="cambiaHastaX();"><br/>
+                __ Alto:<input id="hasta_y" onchange="cambiaHastaY();">
+              </span><br/>
+            </div>
             <br/><br/>
+            <div hidden>
             <span>Rozamiento del suelo:<input id="rozamientoSuelo" onchange="cambiaRozamientoSuelo();"></span><br/>
             <span>Paredes:<input type="checkbox" id="paredes" onchange="cambiaParedes();"></span><br/>
             <span>Gravedad del entorno:<input id="gravedadEntorno" onchange="cambiaGravedadEntorno();"></span><br/>
             <span>Gravedad de los cuerpos:<input type="checkbox" id="gravedadCuerpos" onchange="cambiaGravedadCuerpos();"></span><br/>
             <span>Viento:<br/>
-              X:<input id="viento_x" onchange="cambiaVientoX();"><br/>
-              Y:<input id="viento_y" onchange="cambiaVientoY();">
+              __ X:<input id="viento_x" onchange="cambiaVientoX();"><br/>
+              __ Y:<input id="viento_y" onchange="cambiaVientoY();">
             </span>
             </div>
           </div>
