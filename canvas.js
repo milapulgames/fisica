@@ -84,6 +84,16 @@ Canvas.segmento = function(desde, hasta, color) {
   Canvas.contexto.closePath();
 };
 
+Canvas.poligono = function(puntos, color) {
+  Canvas.contexto.beginPath();
+  Canvas.contexto.strokeStyle = color;
+  for (punto of puntos) {
+    Canvas.contexto.lineTo(punto.x, punto.y);
+  }
+  Canvas.contexto.stroke();
+  Canvas.contexto.closePath();
+};
+
 // TODO: Esto debería pasar a Geometria.js
 Canvas.interseccionRectaRecta = function(recta1, recta2) {
   if (recta1.m === recta2.m) { // Paralelas
