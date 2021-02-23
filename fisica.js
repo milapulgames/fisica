@@ -15,11 +15,10 @@ Fisica.actualizarVelocidadCuerpo = function(cuerpos, clave, cuerpo) {
   for (otraClave in cuerpos) {
     let otro = cuerpos[otraClave];
     if (clave != otraClave && Fisica.colisiona(cuerpo, otro)) {
-
-      /*cuerpo.vel_x *= -1;
+      cuerpo.vel_x *= -1;
       cuerpo.vel_y *= -1;
       otro.vel_x *= -1;
-      otro.vel_y *= -1;*/
+      otro.vel_y *= -1;
     }
   }
   Fisica.verificarPared(cuerpo);
@@ -38,7 +37,7 @@ Fisica.colisiona = function(cuerpo, otro) {
   let pos1 = new Victor(cuerpo.pos_x, cuerpo.pos_y).add(new Victor(cuerpo.vel_x, cuerpo.vel_y));
   let pos2 = new Victor(otro.pos_x, otro.pos_y).add(new Victor(otro.vel_x, otro.vel_y));
   let distancia = pos1.subtract(pos2).length();
-  return (distancia < cuerpo.radio + otro.radio);
+  return (distancia < cuerpo.colisionador.radio + otro.colisionador.radio);
 };
 
 Fisica.verificarPared = function(cuerpo) {

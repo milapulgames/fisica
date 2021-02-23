@@ -15,7 +15,7 @@ function inicializar() {
         clase: Fisica.DINAMICO,
         pos_x: 50,
         pos_y: 50,
-        vel_x: 10,
+        vel_x: 2,
         vel_y: 0,
         acc_x: 0,
         acc_y: 0,
@@ -32,7 +32,7 @@ function inicializar() {
         pos_x: 150,
         pos_y: 150,
         vel_x: 0,
-        vel_y: -5,
+        vel_y: -0.1,
         acc_x: 0,
         acc_y: 0,
         masa: 10,
@@ -51,7 +51,7 @@ function inicializar() {
         vel_y: 0,
         acc_x: 0,
         acc_y: 0,
-        masa: 10,
+        masa: 20,
         elasticidad: 0.5,
         rozamiento: 0.5,
         colisionador:{
@@ -63,8 +63,8 @@ function inicializar() {
         clase: Fisica.DINAMICO,
         pos_x: 50,
         pos_y: 150,
-        vel_x: 5,
-        vel_y: -5,
+        vel_x: 1,
+        vel_y: -1,
         acc_x: 0,
         acc_y: 0,
         masa: 10,
@@ -79,8 +79,8 @@ function inicializar() {
         clase: Fisica.DINAMICO,
         pos_x: 150,
         pos_y: 50,
-        vel_x: 1,
-        vel_y: 1,
+        vel_x: 0.5,
+        vel_y: 0.5,
         acc_x: 0,
         acc_y: 0,
         masa: 10,
@@ -121,6 +121,17 @@ function inicializar() {
   actualizarOpcionesCuerpos();
   actualizarOtrasOpciones();
   Canvas.inicializar();
+  CLOCK.crear(10,50);
+  SLIDER.nuevo({
+    placeholderId: 'sliderPlaceholder',
+    mostrarValor: false,
+    paso: 10,
+    funcion: cambiarVelocidad
+  });
+};
+
+function cambiarVelocidad(valor) {
+  CLOCK.setearVelocidad(Math.floor(valor));
 };
 
 function actualizarSelectorCuerpos() {
@@ -357,14 +368,14 @@ function ejecutar() {
   document.getElementById('botonEjecutar').disabled = true;
   document.getElementById('divCuerpos').style.display = 'none';
   INFO.cuerpos = duplicar(DATOS.cuerpos);
-  INFO.intervalo = setInterval(pulso, 10);
+  CLOCK.iniciar(pulso);
   document.getElementById('botonDetener').disabled = false;
 };
 
 function detener() {
   document.getElementById('botonDetener').disabled = true;
   document.getElementById('divCuerpos').style.display = 'block';
-  clearInterval(INFO.intervalo);
+  CLOCK.detener();
   document.getElementById('botonEjecutar').disabled = false;
 };
 
