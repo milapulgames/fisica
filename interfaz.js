@@ -15,7 +15,7 @@ function inicializar() {
         clase: Fisica.DINAMICO,
         pos_x: 50,
         pos_y: 50,
-        vel_x: 2,
+        vel_x: 5,
         vel_y: 0,
         acc_x: 0,
         acc_y: 0,
@@ -32,7 +32,7 @@ function inicializar() {
         pos_x: 150,
         pos_y: 150,
         vel_x: 0,
-        vel_y: -0.1,
+        vel_y: -5,
         acc_x: 0,
         acc_y: 0,
         masa: 10,
@@ -78,7 +78,7 @@ function inicializar() {
       magenta:{
         clase: Fisica.DINAMICO,
         pos_x: 150,
-        pos_y: 50,
+        pos_y: 250,
         vel_x: 0.5,
         vel_y: 0.5,
         acc_x: 0,
@@ -121,7 +121,7 @@ function inicializar() {
   actualizarOpcionesCuerpos();
   actualizarOtrasOpciones();
   Canvas.inicializar();
-  CLOCK.crear(10,50);
+  CLOCK.crear(100,50);
   SLIDER.nuevo({
     placeholderId: 'sliderPlaceholder',
     mostrarValor: false,
@@ -385,8 +385,8 @@ function reiniciar() {
 };
 
 function pulso() {
-  Fisica.actualizar(INFO);
   Canvas.actualizar(INFO.cuerpos);
+  Fisica.actualizar(INFO);
 };
 
 function duplicar(algo) {

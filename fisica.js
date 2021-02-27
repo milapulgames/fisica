@@ -1,4 +1,4 @@
-Fisica = {
+const Fisica = {
   ESTATICO: "Estático",
   DINAMICO: "Dinámico"
 };
@@ -14,12 +14,15 @@ Fisica.actualizar = function(datos) {
 Fisica.actualizarVelocidadCuerpo = function(cuerpos, clave, cuerpo) {
   for (otraClave in cuerpos) {
     let otro = cuerpos[otraClave];
-    if (clave != otraClave && Fisica.colisiona(cuerpo, otro)) {
+    if (clave != otraClave) {
+      Fisica.colisiona(cuerpo, otro);
+    }
+    /*if (clave != otraClave && Fisica.colisiona(cuerpo, otro)) {
       cuerpo.vel_x *= -1;
       cuerpo.vel_y *= -1;
       otro.vel_x *= -1;
       otro.vel_y *= -1;
-    }
+    }*/
   }
   Fisica.verificarPared(cuerpo);
 };
@@ -34,10 +37,42 @@ Fisica.actualizarPosicionCuerpo = function(cuerpos, clave, cuerpo) {
 };
 
 Fisica.colisiona = function(cuerpo, otro) {
+  interseccion = Geometria.interseccion(cuerpo, otro);
+  if (interseccion) {
+    let recta = Geometria.rectaQuePasaPorDosPuntos(interseccion[0], interseccion[1]);
+    let velocidad = new Victor(cuerpo.vel_x, cuerpo.vel_y);
+    let nuevaVelocidad = Geometria.espejarVector(velocidad, recta);
+    cuerpo.vel_x = nuevaVelocidad.x;
+    cuerpo.vel_y = nuevaVelocidad.y;
+  }
+    /*let intensidad = 10;
+    if (recta.m) {
+      let x = 1;
+      let y = recta.m + recta.b;
+      let angulo = Math.atan2(y,x);
+      angulo += Math.PI;
+      Fisica.aplicarFuerza(cuerpo, new Victor(10, 0));
+    } else {
+      if (cuerpo.pos_x > recta.b) {
+        Fisica.aplicarFuerza(cuerpo, new Victor(intensidad, 0));
+        Fisica.aplicarFuerza(otro, new Victor(-intensidad, 0));
+      } else {
+        Fisica.aplicarFuerza(otro, new Victor(intensidad, 0));
+        Fisica.aplicarFuerza(cuerpo, new Victor(-intensidad, 0));
+      }
+    }
+    Fisica.aplicarFuerza(cuerpo, recta.rotateByDeg(90));
+    Fisica.aplicarFuerza(otro, recta.rotateByDeg(-90));
+  }
   let pos1 = new Victor(cuerpo.pos_x, cuerpo.pos_y).add(new Victor(cuerpo.vel_x, cuerpo.vel_y));
   let pos2 = new Victor(otro.pos_x, otro.pos_y).add(new Victor(otro.vel_x, otro.vel_y));
   let distancia = pos1.subtract(pos2).length();
-  return (distancia < cuerpo.colisionador.radio + otro.colisionador.radio);
+  return (distancia < cuerpo.colisionador.radio + otro.colisionador.radio);*/
+};
+
+Fisica.aplicarFuerza = function(cuerpo, recta) {
+  cuerpo.vel_x += recta.x;
+  cuerpo.vel_y += recta.y;
 };
 
 Fisica.verificarPared = function(cuerpo) {
@@ -66,27 +101,4 @@ Fisica.verificarPared = function(cuerpo) {
       cuerpo.pos_y = Canvas.div.height;
     }
   }
-};
-
-Fisica.colisionParedPelota = function(cuerpo, recta) {
-  let r = cuerpo.radio;
-  let a = cuerpo.pos_x;
-  let b = cuerpo.pos_y;
-  let m = recta.m;
-  let d = recta.b;
-  //r^2(1+m^2)-(b-ma-d)^2
-  let D = Math.pow(r,2)*(1+Math.pow(m,2)) - Math.pow(b-m*a-d,2);
-  if (D <= 0) {
-    return;
-  }
-  let x12 = new Victor(
-    (a+b*m - d*m + Math.sqrt(D)) / (1+Math.pow(m,2)),
-    (d+a*m + b*Math.pow(m,2) + m*Math.sqrt(D)) / (1+Math.pow(m,2))
-  );
-  let y12 = new Victor(
-    (a+b*m - d*m - Math.sqrt(D)) / (1+Math.pow(m,2)),
-    (d+a*m + b*Math.pow(m,2) - m*Math.sqrt(D)) / (1+Math.pow(m,2))
-  );
-  Canvas.circulo(x12.x, x12.y, 3, "#000");
-  Canvas.circulo(y12.x, y12.y, 3, "#000");
 };
