@@ -128,6 +128,7 @@ function inicializar() {
     paso: 10,
     funcion: cambiarVelocidad
   });
+  reiniciar();
 };
 
 function cambiarVelocidad(valor) {
@@ -378,9 +379,6 @@ function ejecutarDetener() {
 
 function ejecutar() {
   document.getElementById('divCuerpos').style.display = 'none';
-  if (INFO.cuerpos === undefined) {
-    INFO.cuerpos = duplicar(DATOS.cuerpos);
-  };
   CLOCK.iniciar(pulso);
 };
 
