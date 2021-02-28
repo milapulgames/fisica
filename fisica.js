@@ -41,7 +41,9 @@ Fisica.colisiona = function(cuerpo, otro) {
   if (interseccion) {
     let recta = Geometria.rectaQuePasaPorDosPuntos(interseccion[0], interseccion[1]);
     let velocidad = new Victor(cuerpo.vel_x, cuerpo.vel_y);
+    debug(function() { Canvas.segmento({x:cuerpo.pos_x, y:cuerpo.pos_y}, {x:cuerpo.pos_x-10*velocidad.x, y:cuerpo.pos_y-10*velocidad.y}, "#00f"); });
     let nuevaVelocidad = Geometria.espejarVector(velocidad, recta);
+    debug(function() { Canvas.segmento({x:cuerpo.pos_x, y:cuerpo.pos_y}, {x:cuerpo.pos_x+10*nuevaVelocidad.x, y:cuerpo.pos_y+10*nuevaVelocidad.y}, "#ff0"); });
     cuerpo.vel_x = nuevaVelocidad.x;
     cuerpo.vel_y = nuevaVelocidad.y;
   }

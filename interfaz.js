@@ -362,21 +362,31 @@ function cambiaVientoY() {
 function guardarDatos() {
   Canvas.actualizar(DATOS.cuerpos);
   sessionStorage.DATOS = JSON.stringify(DATOS);
+  reiniciar();
+};
+
+function ejecutarDetener() {
+  let boton = document.getElementById('botonEjecutarDetener');
+  if (boton.innerHTML == 'Ejecutar') {
+    ejecutar();
+    boton.innerHTML = 'Detener';
+  } else {
+    detener();
+    boton.innerHTML = 'Ejecutar';
+  }
 };
 
 function ejecutar() {
-  document.getElementById('botonEjecutar').disabled = true;
   document.getElementById('divCuerpos').style.display = 'none';
-  INFO.cuerpos = duplicar(DATOS.cuerpos);
+  if (INFO.cuerpos === undefined) {
+    INFO.cuerpos = duplicar(DATOS.cuerpos);
+  };
   CLOCK.iniciar(pulso);
-  document.getElementById('botonDetener').disabled = false;
 };
 
 function detener() {
-  document.getElementById('botonDetener').disabled = true;
   document.getElementById('divCuerpos').style.display = 'block';
   CLOCK.detener();
-  document.getElementById('botonEjecutar').disabled = false;
 };
 
 function reiniciar() {
@@ -385,8 +395,16 @@ function reiniciar() {
 };
 
 function pulso() {
-  Canvas.actualizar(INFO.cuerpos);
+  INFO.debugs = [];
   Fisica.actualizar(INFO);
+  Canvas.actualizar(INFO.cuerpos);
+  for (f of INFO.debugs) {
+    f();
+  }
+};
+
+function debug(f) {
+  INFO.debugs.push(f);
 };
 
 function duplicar(algo) {

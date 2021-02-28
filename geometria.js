@@ -72,7 +72,7 @@ Geometria.interseccion = function(uno, otro) {
         ];
           // Muestro la recta en el canvas:
           let r = Geometria.rectaQuePasaPorDosPuntos(resultado[0], resultado[1]);
-          Canvas.recta(0, r.b, r.m, "#000");
+          debug(function() { Canvas.recta(0, r.b, r.m, "#000"); });
         return resultado;
       }
     }
@@ -99,14 +99,14 @@ Geometria.interseccionCirculoRecta = function(cuerpo, recta) {
     (a+b*m - d*m - Math.sqrt(D)) / (1+Math.sq(m)),
     (d+a*m + b*Math.sq(m) - m*Math.sqrt(D)) / (1+Math.sq(m))
   );
-  Canvas.circulo(x12.x, x12.y, 3, "#000");
-  Canvas.circulo(y12.x, y12.y, 3, "#000");
+  debug(function() { Canvas.circulo(x12.x, x12.y, 3, "#000"); });
+  debug(function() { Canvas.circulo(y12.x, y12.y, 3, "#000"); });
 };
 
 // Devuelve el vector resultante de espejar al
 // vector 'vector' respecto a la recta 'recta'
 Geometria.espejarVector = function(vector, recta) {
-  let espejo = new Victor(1, recta.m + recta.b);
+  let espejo = new Victor(1, recta.m);
   let k = vector.dot(espejo) / espejo.dot(espejo);
   return new Victor(-vector.x, -vector.y).add(new Victor(2*k*espejo.x, 2*k*espejo.y));
 };
