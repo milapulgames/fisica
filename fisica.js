@@ -79,28 +79,28 @@ Fisica.aplicarFuerza = function(cuerpo, recta) {
 
 Fisica.verificarPared = function(cuerpo) {
   if (PAREDES) {
-    if (cuerpo.pos_x >= Canvas.div.width) {
-      cuerpo.pos_x = Canvas.div.width;
+    if (cuerpo.pos_x + cuerpo.colisionador.radio >= Canvas.div.width) {
+      cuerpo.pos_x = Canvas.div.width - cuerpo.colisionador.radio;
       cuerpo.vel_x *= -1;
-    } else if (cuerpo.pos_y >= Canvas.div.height) {
-      cuerpo.pos_y = Canvas.div.height;
+    } else if (cuerpo.pos_y + cuerpo.colisionador.radio >= Canvas.div.height) {
+      cuerpo.pos_y = Canvas.div.height - cuerpo.colisionador.radio;
       cuerpo.vel_y *= -1;
-    } else if (cuerpo.pos_x <= 0) {
-      cuerpo.pos_x = 0;
+    } else if (cuerpo.pos_x - cuerpo.colisionador.radio <= 0) {
+      cuerpo.pos_x = cuerpo.colisionador.radio;
       cuerpo.vel_x *= -1;
-    } else if (cuerpo.pos_y <= 0) {
-      cuerpo.pos_y = 0;
+    } else if (cuerpo.pos_y - cuerpo.colisionador.radio <= 0) {
+      cuerpo.pos_y = cuerpo.colisionador.radio;
       cuerpo.vel_y *= -1;
     }
   } else {
     if (cuerpo.pos_x >= Canvas.div.width) {
-      cuerpo.pos_x = 0;
+      cuerpo.pos_x -= Canvas.div.width;
     } else if (cuerpo.pos_y >= Canvas.div.height) {
-      cuerpo.pos_y = 0;
+      cuerpo.pos_y -= Canvas.div.height;
     } else if (cuerpo.pos_x <= 0) {
-      cuerpo.pos_x = Canvas.div.width;
+      cuerpo.pos_x += Canvas.div.width;
     } else if (cuerpo.pos_y <= 0) {
-      cuerpo.pos_y = Canvas.div.height;
+      cuerpo.pos_y += Canvas.div.height;
     }
   }
 };
