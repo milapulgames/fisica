@@ -84,6 +84,11 @@ Canvas.segmento = function(desde, hasta, color) {
   Canvas.contexto.closePath();
 };
 
+Canvas.cruz = function(posicion, color, len=10) {
+  Canvas.segmento({x: posicion.x-len/2, y: posicion.y-len/2}, {x: posicion.x+len/2, y: posicion.y+len/2}, color);
+  Canvas.segmento({x: posicion.x-len/2, y: posicion.y+len/2}, {x: posicion.x+len/2, y: posicion.y-len/2}, color);
+};
+
 Canvas.poligono = function(puntos, color) {
   Canvas.contexto.beginPath();
   Canvas.contexto.strokeStyle = color;
