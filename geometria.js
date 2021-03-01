@@ -2,6 +2,7 @@ const Geometria = {};
 
 // Agrego la función sq a Math para calcular rápido el cuadrado de un número
 Math.sq = function(x) { return x*x; };
+Math.floatEq = function(a, b) { return Math.abs(a-b) < 0.0001; };
 
 // Dada una recta representada con su base y pendiente,
 // devuelve el ángulo en radiandes que dicha recta forma con el eje horizontal.
@@ -39,6 +40,7 @@ Geometria.rectaQuePasaPorDosPuntos = function(pto1, pto2) {
 // Si hay intersección devuelve dos puntos
 // Si no, devuelve undefined
 Geometria.interseccion = function(uno, otro) {
+  let resultado;
   if (uno.colisionador.tipo == COLISIONADOR.CIRCULO && otro.colisionador.tipo == COLISIONADOR.CIRCULO) {
     /*
     C1: (x-a)^2 + (y-b)^2 = ro^2
@@ -60,24 +62,30 @@ Geometria.interseccion = function(uno, otro) {
     let ri = otro.colisionador.radio
     let D = Math.sqrt(Math.sq(c-a) + Math.sq(d-b));
     if (ro+ri > D && D > Math.abs(ro-ri)) {
-      if (b != d) {
+      if (Math.floatEq(b, d)) {
+        let z = c-a;
+        let x = a + (Math.sq(z) - Math.sq(ro) + Math.sq(ri)) / 2*z;
+        resultado = [
+          {x: x, y:0},
+          {x: x, y:1}
+        ];
+      } else {
         let Q = Math.sqrt(
           (D+ro+ri)*(D+ro-ri)*(D-ro+ri)*(-D+ro+ri)
         )/4;
-        let resultado = [
+        resultado = [
           {x: (a+c)/2 + (c-a)*(Math.sq(ro)-Math.sq(ri))/(2*Math.sq(D)) + 2*(b-d)*Q/Math.sq(D),
             y: (b+d)/2 + (d-b)*(Math.sq(ro)-Math.sq(ri))/(2*Math.sq(D)) - 2*(a-c)*Q/Math.sq(D)},
           {x: (a+c)/2 + (c-a)*(Math.sq(ro)-Math.sq(ri))/(2*Math.sq(D)) - 2*(b-d)*Q/Math.sq(D),
           y: (b+d)/2 + (d-b)*(Math.sq(ro)-Math.sq(ri))/(2*Math.sq(D)) + 2*(a-c)*Q/Math.sq(D)}
         ];
-          // Muestro la recta en el canvas:
-          let r = Geometria.rectaQuePasaPorDosPuntos(resultado[0], resultado[1]);
-          debug(function() { Canvas.recta(0, r.b, r.m, "#000"); });
-        return resultado;
+        // Muestro la recta en el canvas:
+        let r = Geometria.rectaQuePasaPorDosPuntos(resultado[0], resultado[1]);
+        debug(function() { Canvas.recta(0, r.b, r.m, "#000"); });
       }
     }
   }
-  return undefined;
+  return resultado;
 };
 
 Geometria.interseccionCirculoRecta = function(cuerpo, recta) {
@@ -106,7 +114,12 @@ Geometria.interseccionCirculoRecta = function(cuerpo, recta) {
 // Devuelve el vector resultante de espejar al
 // vector 'vector' respecto a la recta 'recta'
 Geometria.espejarVector = function(vector, recta) {
-  let espejo = new Victor(1, recta.m);
+  let espejo;
+  if (recta.m === undefined) {
+    espejo = new Victor(0, 1);
+  } else {
+    espejo = new Victor(1, recta.m);
+  }
   let k = vector.dot(espejo) / espejo.dot(espejo);
   return new Victor(-vector.x, -vector.y).add(new Victor(2*k*espejo.x, 2*k*espejo.y));
 };
