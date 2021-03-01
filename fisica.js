@@ -104,3 +104,98 @@ Fisica.verificarPared = function(cuerpo) {
     }
   }
 };
+
+Fisica.actualizar2 = function(datos) {
+  for (clave in datos.cuerpos) {
+    let cuerpo = datos.cuerpos[clave];
+    let posicionAnterior = new Victor(cuerpo.pos_x, cuerpo.pos_y);
+    let velocidad = new Victor(cuerpo.vel_x, cuerpo.vel_y);
+    Fisica.actualizarPosicionCuerpo(INFO.cuerpos, clave, cuerpo);
+    Fisica.verificarPared(cuerpo);
+    for (otraClave in datos.cuerpos) {
+      let otro = datos.cuerpos[otraClave];
+      if (clave != otraClave) {
+        interseccion = Geometria.interseccion(cuerpo, otro);
+        if (interseccion) {
+          let recta = Geometria.rectaQuePasaPorDosPuntos(interseccion[0], interseccion[1]);
+          //--- MOVERME PARA ATRÁS
+          let mV, bV;
+          let x2 = otro.pos_x;
+          let y2 = otro.pos_y;
+          let r1 = cuerpo.colisionador.radio;
+          let r2 = otro.colisionador.radio;
+          if (velocidad.x == 0) {
+            // Busco posición tal que la intersección sea un punto <=>
+            // (x1-x2)^2 + (y1-y2)^2 = (r1 + r2)^2
+            // (X-x2)^2 + (y1-y2)^2 = (r1 + r2)^2
+            // y1^2 -2.y1.y2 +y2^2 = (r1 + r2)^2 - (X-x2)^2
+            // Resolvente con a=1, b=-2.y2 y c=(X-x2)^2 - (r1 + r2)^2 + y2^2
+            let a = 1;
+            let b = -2*y2;
+            let c = Math.sq(cuerpo.pos_x-x2) -Math.sq(r1+r2) + Math.sq(y2);
+            let ym1 = (-b + Math.sqrt(Math.sq(b)-4*a*c))/(2*a);
+            let ym2 = (-b - Math.sqrt(Math.sq(b)-4*a*c))/(2*a);
+            debug(function() { Canvas.cruz({x:cuerpo.pos_x, y:ym1}, "#000"); });
+            debug(function() { Canvas.cruz({x:cuerpo.pos_x, y:ym2}, "#000"); });
+            let d1 = new Victor(cuerpo.pos_x, ym1).subtract(posicionAnterior).length();
+            let d2 = new Victor(cuerpo.pos_x, ym2).subtract(posicionAnterior).length();
+            if (d1 > d2) {
+              cuerpo.pos_y = ym2;
+            } else {
+              cuerpo.pos_y = ym1;
+            }
+          } else {
+            // Obtengo la recta de la velocidad
+            mV = velocidad.y / velocidad.x;
+            bV = posicionAnterior.y - mV*posicionAnterior.x;
+            // debug(function() { Canvas.recta(posicionAnterior.x, posicionAnterior.y, mV, "#000"); });
+            // Entonces, ym = mV*xm + bV
+
+            // Busco posición tal que la intersección sea un punto <=>
+            // (x1-x2)^2 + (y1-y2)^2 = (r1 + r2)^2
+            // x1^2 -2.x1.x2 +x2^2 + y1^2 -2.y1.y2 +y2^2 = (r1 + r2)^2
+            // x1^2 -(2.x2).x1 + (mV.x1 + bV)^2 -(2.y2).(mV.x1 + bV) = (r1 + r2)^2 -x2^2 -y2^2
+            // x1^2 -(2.x2).x1 + (mV.x1)^2 +2.mV.x1.bV + bV^2 -(2.y2.mV).x1 -2.y2.bV = (r1 + r2)^2 -x2^2 -y2^2
+            // (1 + mV^2).x1^2 + (2.mV.bV-2.x2-2.y2.mV).x1 = (r1 + r2)^2 -x2^2 -y2^2 -bV^2 +2.y2.bV
+            // Resolvente con a=(1 + mV^2), b=(2.mV.bV-2.x2-2.y2.mV) y c= x2^2 +y2^2 +bV^2 -2.y2.bV -(r1 + r2)^2
+            let a = 1 + Math.sq(mV);
+            let b = 2*mV*bV -2*x2 -2*y2*mV;
+            let c = Math.sq(x2) +Math.sq(y2) +Math.sq(bV) -2*y2*bV -Math.sq(r1+r2);
+            let xm1 = (-b + Math.sqrt(Math.sq(b)-4*a*c))/(2*a);
+            let xm2 = (-b - Math.sqrt(Math.sq(b)-4*a*c))/(2*a);
+            let ym1 = mV*xm1 + bV;
+            let ym2 = mV*xm2 + bV;
+            debug(function() { Canvas.cruz({x:xm1, y:ym1}, "#000"); });
+            debug(function() { Canvas.cruz({x:xm2, y:ym2}, "#000"); });
+            let d1 = new Victor(xm1, ym1).subtract(posicionAnterior).length();
+            let d2 = new Victor(xm2, ym2).subtract(posicionAnterior).length();
+            if (d1 > d2) {
+              cuerpo.pos_x = xm2;
+              cuerpo.pos_y = ym2;
+            } else {
+              cuerpo.pos_x = xm1;
+              cuerpo.pos_y = ym1;
+            }
+          }
+          let xT = r2*(cuerpo.pos_x-x2) / (r1+r2) + x2;
+          let yT = r2*(cuerpo.pos_y-y2) / (r1+r2) + y2;
+          let mPrima;
+          if (Math.floatEq(cuerpo.pos_y, y2)) {
+            bPrima = xT;
+          } else {
+            mPrima = -(cuerpo.pos_x-x2) / (cuerpo.pos_y-y2);
+            bPrima = yT - mPrima*xT;
+          }
+          recta = {m: mPrima, b: bPrima};
+          debug(function() { Canvas.recta(xT, yT, mPrima, "#0ff"); });
+          //---
+          debug(function() { Canvas.segmento({x:cuerpo.pos_x, y:cuerpo.pos_y}, {x:cuerpo.pos_x-10*velocidad.x, y:cuerpo.pos_y-10*velocidad.y}, "#00f"); });
+          let nuevaVelocidad = Geometria.espejarVector(velocidad, recta);
+          debug(function() { Canvas.segmento({x:cuerpo.pos_x, y:cuerpo.pos_y}, {x:cuerpo.pos_x+10*nuevaVelocidad.x, y:cuerpo.pos_y+10*nuevaVelocidad.y}, "#ff0"); });
+          cuerpo.vel_x = nuevaVelocidad.x;
+          cuerpo.vel_y = nuevaVelocidad.y;
+        }
+      }
+    }
+  }
+};
