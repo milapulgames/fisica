@@ -3,6 +3,7 @@ const Fisica = {
   DINAMICO: "Dinámico"
 };
 PAREDES = true;
+MASAPAREDES = 10;
 
 Fisica.actualizar = function(datos) {
   for (clave in datos.cuerpos) {
@@ -12,8 +13,36 @@ Fisica.actualizar = function(datos) {
 };
 
 Fisica.actualizarVelocidadCuerpo = function(cuerpos, clave, cuerpo) {
-  for (otraClave in cuerpos) {
-    let otro = cuerpos[otraClave];
+  let cuerposYParedes = {}
+  let atributosParedes = [
+    {x: 0, y: 0, pendiente: 0},
+    {x: 0, y: 0, pendiente: undefined},
+    {x: Canvas.ancho(), y: Canvas.alto(), pendiente: 0},
+    {x: Canvas.ancho(), y: Canvas.alto(), pendiente: undefined}
+  ]
+
+  for (let i = 0; i < 4; i++) {
+    cuerposYParedes['pared_' + i] = {
+      clase: Fisica.ESTATICO,
+      pos_x: atributosParedes[i].x,
+      pos_y: atributosParedes[i].y,
+      vel_x: 0,
+      vel_y: 0,
+      acc_x: 0,
+      acc_y: 0,
+      masa: 10,
+      elasticidad: 0.5,
+      rozamiento: 0.5,
+      colisionador:{
+        tipo: COLISIONADOR.RECTA,
+        pendiente: atributosParedes[i].pendiente
+      }
+    }
+  }
+  Object.assign(cuerposYParedes, cuerpos);
+
+  for (otraClave in cuerposYParedes) {
+    let otro = cuerposYParedes[otraClave];
     if (clave != otraClave) {
       Fisica.colisiona(cuerpo, otro);
     }
@@ -24,7 +53,8 @@ Fisica.actualizarVelocidadCuerpo = function(cuerpos, clave, cuerpo) {
       otro.vel_y *= -1;
     }*/
   }
-  Fisica.verificarPared(cuerpo);
+  //Fisica.verificarPared(cuerpo);
+
 };
 
 Fisica.actualizarPosicionCuerpo = function(cuerpos, clave, cuerpo) {
@@ -37,9 +67,9 @@ Fisica.actualizarPosicionCuerpo = function(cuerpos, clave, cuerpo) {
 };
 
 Fisica.colisiona = function(cuerpo, otro) {
-  interseccion = Geometria.interseccion(cuerpo, otro);
+  interseccion = Geometria.interseccion(Cuerpo.colisionador2Geometria(cuerpo), Cuerpo.colisionador2Geometria(otro));
   if (interseccion) {
-    let recta = Geometria.rectaQuePasaPorDosPuntos(interseccion[0], interseccion[1]);
+    let recta = interseccion;
     let velocidad = new Victor(cuerpo.vel_x, cuerpo.vel_y);
     debug(function() { Canvas.segmento({x:cuerpo.pos_x, y:cuerpo.pos_y}, {x:cuerpo.pos_x-10*velocidad.x, y:cuerpo.pos_y-10*velocidad.y}, "#00f"); });
     let nuevaVelocidad = Geometria.espejarVector(velocidad, recta);
@@ -115,7 +145,7 @@ Fisica.actualizar2 = function(datos) {
     for (otraClave in datos.cuerpos) {
       let otro = datos.cuerpos[otraClave];
       if (clave != otraClave) {
-        interseccion = Geometria.interseccion(cuerpo, otro);
+        interseccion = Geometria.interseccion(Cuerpo.colisionador2Geometria(cuerpo), Cuerpo.colisionador2Geometria(otro));
         if (interseccion) {
           let recta = Geometria.rectaQuePasaPorDosPuntos(interseccion[0], interseccion[1]);
           //--- MOVERME PARA ATRÁS

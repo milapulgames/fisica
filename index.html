@@ -5,6 +5,7 @@
     <script src="victor.min.js" type="text/javascript"></script>
     <script src="geometria.js" type="text/javascript"></script>
     <script src="fisica.js" type="text/javascript"></script>
+    <script src="cuerpo.js" type="text/javascript"></script>
     <script src="clock/clock.js" type="text/javascript"></script>
     <script src="clock/slider.js" type="text/javascript"></script>
   </head>
@@ -33,7 +34,7 @@
             <button onclick="borrarCuerpo();">-</button>
           <!--Opciones-->
           <div>
-            <span hidden>Clase:<select id="selectorClase" onchange="cambiaClase();">
+            <span>Clase:<select id="selectorClase" onchange="cambiaClase();">
               <option>Estático</option>
               <option>Dinámico</option>
             </select></span><br/>
@@ -45,7 +46,7 @@
               __ X:<input id="vel_x" onchange="cambiaVelX();"><br/>
               __ Y:<input id="vel_y" onchange="cambiaVelY();">
             </span><br/>
-            <div hidden>
+            <div>
             <span>Aceleración<br/>
               __ X:<input id="acc_x" onchange="cambiaAccX();"><br/>
               __ Y:<input id="acc_y" onchange="cambiaAccY();">
@@ -72,7 +73,7 @@
               </span><br/>
             </div>
             <br/><br/>
-            <div hidden>
+            <div>
             <span>Rozamiento del suelo:<input id="rozamientoSuelo" onchange="cambiaRozamientoSuelo();"></span><br/>
             <span>Paredes:<input type="checkbox" id="paredes" onchange="cambiaParedes();"></span><br/>
             <span>Gravedad del entorno:<input id="gravedadEntorno" onchange="cambiaGravedadEntorno();"></span><br/>

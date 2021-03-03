@@ -39,9 +39,12 @@ Geometria.rectaQuePasaPorDosPuntos = function(pto1, pto2) {
 
 // Si hay intersección devuelve dos puntos
 // Si no, devuelve undefined
+
+
+
 Geometria.interseccion = function(uno, otro) {
   let resultado;
-  if (uno.colisionador.tipo == COLISIONADOR.CIRCULO && otro.colisionador.tipo == COLISIONADOR.CIRCULO) {
+  if (uno.tipo == COLISIONADOR.CIRCULO && otro.tipo == COLISIONADOR.CIRCULO) {
     /*
     C1: (x-a)^2 + (y-b)^2 = ro^2
     C2: (x-c)^2 + (y-d)^2 = ri^2
@@ -54,12 +57,12 @@ Geometria.interseccion = function(uno, otro) {
           (d-b)                 2(d-b)
       -> Si b == d, la recta es la vertical que pasa por x = a + (z^2 - ro^2 + ri^2) / 2z con z = (c-a)
     */
-    let a = uno.pos_x;
-    let b = uno.pos_y;
-    let c = otro.pos_x;
-    let d = otro.pos_y;
-    let ro = uno.colisionador.radio;
-    let ri = otro.colisionador.radio
+    let a = uno.x;
+    let b = uno.y;
+    let c = otro.x;
+    let d = otro.y;
+    let ro = uno.radio;
+    let ri = otro.radio
     let D = Math.sqrt(Math.sq(c-a) + Math.sq(d-b));
     if (ro+ri > D && D > Math.abs(ro-ri)) {
       if (Math.floatEq(b, d)) {
@@ -79,26 +82,40 @@ Geometria.interseccion = function(uno, otro) {
           {x: (a+c)/2 + (c-a)*(Math.sq(ro)-Math.sq(ri))/(2*Math.sq(D)) - 2*(b-d)*Q/Math.sq(D),
           y: (b+d)/2 + (d-b)*(Math.sq(ro)-Math.sq(ri))/(2*Math.sq(D)) + 2*(a-c)*Q/Math.sq(D)}
         ];
-        // Muestro la recta en el canvas:
-        let r = Geometria.rectaQuePasaPorDosPuntos(resultado[0], resultado[1]);
-        debug(function() { Canvas.recta(0, r.b, r.m, "#000"); });
       }
+      resultado = Geometria.rectaQuePasaPorDosPuntos(resultado[0], resultado[1]);
+      debug(function() { Canvas.recta(0, resultado.b, resultado.m, "#000"); }); // Muestro la recta en el canvas:
     }
+  } else if (uno.tipo == COLISIONADOR.CIRCULO && otro.tipo == COLISIONADOR.RECTA) {
+    return Geometria.interseccionCirculoRecta(uno, otro)
+  } else if (uno.tipo == COLISIONADOR.RECTA && otro.tipo == COLISIONADOR.CIRCULO) {
+    return Geometria.interseccionCirculoRecta(otro, uno)
   }
   return resultado;
 };
 
-Geometria.interseccionCirculoRecta = function(cuerpo, recta) {
-  let r = cuerpo.radio;
-  let a = cuerpo.pos_x;
-  let b = cuerpo.pos_y;
+Geometria.interseccionCirculoRecta = function(circulo, recta) {
+  //Devuelve la recta de colision, o indefinido si no hay colision
+  let r = circulo.radio;
+  let a = circulo.x;
+  let b = circulo.y;
   let m = recta.m;
   let d = recta.b;
+  if(m === undefined){
+    if(Math.abs(a - d) < r){
+      return recta;
+    } else {
+      return undefined;
+    }
+  }
   //r^2(1+m^2)-(b-ma-d)^2
   let D = Math.sq(r)*(1+Math.sq(m)) - Math.sq(b-m*a-d);
   if (D <= 0) {
-    return;
+    return undefined;
   }
+
+  return recta;
+
   let x12 = new Victor(
     (a+b*m - d*m + Math.sqrt(D)) / (1+Math.sq(m)),
     (d+a*m + b*Math.sq(m) + m*Math.sqrt(D)) / (1+Math.sq(m))
@@ -109,6 +126,7 @@ Geometria.interseccionCirculoRecta = function(cuerpo, recta) {
   );
   debug(function() { Canvas.circulo(x12.x, x12.y, 3, "#000"); });
   debug(function() { Canvas.circulo(y12.x, y12.y, 3, "#000"); });
+
 };
 
 // Devuelve el vector resultante de espejar al

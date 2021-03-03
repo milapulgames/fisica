@@ -11,6 +11,13 @@ Canvas.inicializar = function() {
   Canvas.actualizar(DATOS.cuerpos);
 };
 
+Canvas.ancho = function(){
+  return Canvas.div.width;
+}
+Canvas.alto = function(){
+  return Canvas.div.height;
+}
+
 // Refresca lo que muestra el canvas
 Canvas.actualizar = function(cuerpos) {
   Canvas.limpiar();
