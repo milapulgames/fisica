@@ -67,11 +67,8 @@ Geometria.interseccion = function(uno, otro) {
     if (ro+ri > D && D > Math.abs(ro-ri)) {
       if (Math.floatEq(b, d)) {
         let z = c-a;
-        let x = a + (Math.sq(z) - Math.sq(ro) + Math.sq(ri)) / 2*z;
-        resultado = [
-          {x: x, y:0},
-          {x: x, y:1}
-        ];
+        let x = a + (Math.sq(z) - Math.sq(ro) + Math.sq(ri)) / (2*z);
+        resultado = {m:undefined, b:x};
       } else {
         let Q = Math.sqrt(
           (D+ro+ri)*(D+ro-ri)*(D-ro+ri)*(-D+ro+ri)
@@ -82,9 +79,9 @@ Geometria.interseccion = function(uno, otro) {
           {x: (a+c)/2 + (c-a)*(Math.sq(ro)-Math.sq(ri))/(2*Math.sq(D)) - 2*(b-d)*Q/Math.sq(D),
           y: (b+d)/2 + (d-b)*(Math.sq(ro)-Math.sq(ri))/(2*Math.sq(D)) + 2*(a-c)*Q/Math.sq(D)}
         ];
+        resultado = Geometria.rectaQuePasaPorDosPuntos(resultado[0], resultado[1]);
       }
-      resultado = Geometria.rectaQuePasaPorDosPuntos(resultado[0], resultado[1]);
-      debug(function() { Canvas.recta(0, resultado.b, resultado.m, "#000"); }); // Muestro la recta en el canvas:
+      debug(function() { Canvas.recta(resultado.b, (resultado.m+1)*resultado.b, resultado.m, "#000"); }); // Muestro la recta en el canvas:
     }
   } else if (uno.tipo == COLISIONADOR.CIRCULO && otro.tipo == COLISIONADOR.RECTA) {
     return Geometria.interseccionCirculoRecta(uno, otro)
