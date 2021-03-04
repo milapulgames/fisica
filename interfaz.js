@@ -422,4 +422,42 @@ function duplicar(algo) {
   return algo;
 };
 
+function guardarArchivo() {
+  let nombre = prompt("Nombre:");
+  if (nombre === null) {
+    return;
+  }
+  let e = document.createElement('a');
+  e.setAttribute('href', 'data:text/plain;charset=utf-8,' + JSON.stringify(DATOS));
+  e.setAttribute('download', `${nombre}.json`);
+  e.style.display = 'none';
+  document.body.appendChild(e);
+  e.click();
+  document.body.removeChild(e);
+};
+
+function cargarArchivo() {
+  let e = document.createElement('input');
+  e.type = 'file';
+  let div = document.createElement('div');
+  div.style.display = 'none';
+  div.appendChild(e);
+  document.body.appendChild(div);
+  e.addEventListener('change', function(x) {
+    let archivo = x.target.files[0];
+    if (archivo) {
+      let reader = new FileReader();
+      reader.onload = function() {
+        DATOS = JSON.parse(reader.result);
+        actualizarSelectorCuerpos();
+        actualizarOpcionesCuerpos();
+        actualizarOtrasOpciones();
+        guardarDatos();
+      }
+      reader.readAsText(archivo);
+    }
+  }, false);
+  e.click();
+};
+
 window.addEventListener('load', inicializar);
