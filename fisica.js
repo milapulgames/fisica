@@ -147,7 +147,7 @@ Fisica.actualizar2 = function(datos) {
       if (clave != otraClave) {
         interseccion = Geometria.interseccion(Cuerpo.colisionador2Geometria(cuerpo), Cuerpo.colisionador2Geometria(otro));
         if (interseccion) {
-          let recta = Geometria.rectaQuePasaPorDosPuntos(interseccion[0], interseccion[1]);
+          let recta = interseccion;
           //--- MOVERME PARA ATRÁS
           let mV, bV;
           let x2 = otro.pos_x;
@@ -219,9 +219,15 @@ Fisica.actualizar2 = function(datos) {
           recta = {m: mPrima, b: bPrima};
           debug(function() { Canvas.recta(xT, yT, mPrima, "#0ff"); });
           //---
-          debug(function() { Canvas.segmento({x:cuerpo.pos_x, y:cuerpo.pos_y}, {x:cuerpo.pos_x-10*velocidad.x, y:cuerpo.pos_y-10*velocidad.y}, "#00f"); });
+          let ptoInterseccion = {
+            x:r2*(cuerpo.pos_x-x2)/(r1+r2) + x2,
+            y:r2*(cuerpo.pos_y-y2)/(r1+r2) + y2
+          };
+          debug(function() { Canvas.cruz({x:ptoInterseccion.x, y:ptoInterseccion.y}, "#f00"); });
+          //debug(function() { Canvas.segmento({x:cuerpo.pos_x, y:cuerpo.pos_y}, {x:cuerpo.pos_x-10*velocidad.x, y:cuerpo.pos_y-10*velocidad.y}, "#00f"); });
           let nuevaVelocidad = Geometria.espejarVector(velocidad, recta);
-          debug(function() { Canvas.segmento({x:cuerpo.pos_x, y:cuerpo.pos_y}, {x:cuerpo.pos_x+10*nuevaVelocidad.x, y:cuerpo.pos_y+10*nuevaVelocidad.y}, "#ff0"); });
+          //debug(function() { Canvas.segmento({x:cuerpo.pos_x, y:cuerpo.pos_y}, {x:cuerpo.pos_x+10*nuevaVelocidad.x, y:cuerpo.pos_y+10*nuevaVelocidad.y}, "#ff0"); });
+          debug(function() { Canvas.segmento({x:cuerpo.pos_x, y:cuerpo.pos_y}, ptoInterseccion, "#ff0"); });
           cuerpo.vel_x = nuevaVelocidad.x;
           cuerpo.vel_y = nuevaVelocidad.y;
         }

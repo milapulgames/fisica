@@ -81,7 +81,7 @@ Geometria.interseccion = function(uno, otro) {
         ];
         resultado = Geometria.rectaQuePasaPorDosPuntos(resultado[0], resultado[1]);
       }
-      debug(function() { Canvas.recta(resultado.b, (resultado.m+1)*resultado.b, resultado.m, "#000"); }); // Muestro la recta en el canvas:
+      //debug(function() { Canvas.recta(resultado.b, (resultado.m+1)*resultado.b, resultado.m, "#000"); }); // Muestro la recta en el canvas:
     }
   } else if (uno.tipo == COLISIONADOR.CIRCULO && otro.tipo == COLISIONADOR.RECTA) {
     return Geometria.interseccionCirculoRecta(uno, otro)
